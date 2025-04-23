@@ -7653,6 +7653,14 @@ namespace PMDC.Dungeon
                 if (context.User.MemberTeam == DungeonScene.Instance.ActiveTeam)
                     GameManager.Instance.SE(GraphicsManager.HungerSE);
             }
+            
+            // NECRO IMPROVEMENT: #1508963778 AUTOREFRESH MOVES
+            context.User.MovesRefreshRemainder += 1;
+            if(context.User.MovesRefreshRemainder > context.User.MovesRefreshInterval) {
+                yield return CoroutineManager.Instance.StartCoroutine(context.User.RestoreCharges(-1, 1, false, false));
+                context.User.MovesRefreshRemainder = 0;
+            }
+            
             yield break;
         }
     }
