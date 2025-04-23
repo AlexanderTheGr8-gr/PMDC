@@ -1473,6 +1473,9 @@ namespace PMDC.Dungeon
         {
             if (!context.User.Dead)
                 yield break;
+            
+            // NECRO IMPROVEMENT: #3533259744 Always provide Exp
+            IgnoreMark = true;
 
 
             if (context.User.MemberTeam == DungeonScene.Instance.ActiveTeam)
@@ -1509,6 +1512,11 @@ namespace PMDC.Dungeon
                                 effectiveLevel++;
 
                             int exp = GetExp(monsterForm.ExpYield, context.User.Level, effectiveLevel);
+                            
+                            // NECRO IMPROVEMENT: #3533259744 Always provide Exp
+                            if(!context.User.EXPMarked) exp /= 2;
+                            
+                            
                             DungeonScene.Instance.GainedEXP[ii] += exp;
                         }
                         for (int ii = 0; ii < DungeonScene.Instance.ActiveTeam.Assembly.Count; ii++)
@@ -1516,6 +1524,11 @@ namespace PMDC.Dungeon
                             if (!DungeonScene.Instance.ActiveTeam.Assembly[ii].Absentee)
                             {
                                 int exp = GetExp(monsterForm.ExpYield, context.User.Level, DungeonScene.Instance.ActiveTeam.Assembly[ii].Level);
+                                
+                                // NECRO IMPROVEMENT: #3533259744 Always provide Exp
+                                if(!context.User.EXPMarked) exp /= 2;
+                                
+                                
                                 handoutAssemblyExp(DungeonScene.Instance.ActiveTeam.Assembly[ii], exp);
                             }
                         }
@@ -2626,7 +2639,7 @@ namespace PMDC.Dungeon
         public int HPFraction;
 
         public RegeneratorEvent() { }
-        public RegeneratorEvent(int range, int hpFraction) { 
+        public RegeneratorEvent(int range, int hpFraction) {
             Range = range;
             HPFraction = hpFraction;
         }
@@ -5058,7 +5071,7 @@ namespace PMDC.Dungeon
         /// Events that occur with this trap.
         /// Before it's used, when it hits, after it's used, etc
         /// </summary>
-        public BattleData NewData; 
+        public BattleData NewData;
         
         /// <summary>
         /// The message displayed when the trap is triggered
@@ -6721,7 +6734,7 @@ namespace PMDC.Dungeon
             List<Loc> freeTiles = new List<Loc>();
 
             GameManager.Instance.BattleSE("DUN_One_Room_Orb");
-            for (int xx = bounds.X; xx < bounds.End.X; xx++) 
+            for (int xx = bounds.X; xx < bounds.End.X; xx++)
             {
                 for (int yy = bounds.Y; yy < bounds.End.Y; yy++)
                 {
@@ -7622,7 +7635,7 @@ namespace PMDC.Dungeon
                 }
                 else if (context.User.Fullness <= 20 && prevFullness > 20)
                 {
-                    DungeonScene.Instance.LogMsg(Text.FormatKey("MSG_HUNGER_LOW", context.User.GetDisplayName(true))); 
+                    DungeonScene.Instance.LogMsg(Text.FormatKey("MSG_HUNGER_LOW", context.User.GetDisplayName(true)));
                     GameManager.Instance.SE(GraphicsManager.HungerSE);
                 }
             }
